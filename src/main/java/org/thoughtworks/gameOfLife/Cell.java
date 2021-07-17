@@ -12,7 +12,9 @@ public class Cell {
     }
 
     public void computeNextGenerationCellState(int aliveNeighbours) {
-        if (aliveNeighbours != 2 && aliveNeighbours != 3)
+        if (this.state == CellState.DEAD && aliveNeighbours == 3)
+            this.state = CellState.ALIVE;
+        else if (aliveNeighbours != 2 && aliveNeighbours != 3)
             this.state = CellState.DEAD;
     }
 

@@ -50,9 +50,9 @@ public class CellTest {
 
         @Test
         public void testAliveCellDiesWithLessThanTwoAliveNeighbours() {
-            int aliveNeighbours = 1;
+            int aliveNeighbour = 1;
 
-            cellOne.computeNextGenerationCellState(aliveNeighbours);
+            cellOne.computeNextGenerationCellState(aliveNeighbour);
 
             assertThat(cellOne.state, is(equalTo(DEAD)));
         }
@@ -73,6 +73,33 @@ public class CellTest {
             cellOne.computeNextGenerationCellState(aliveNeighbours);
 
             assertThat(cellOne.state, is(equalTo(DEAD)));
+        }
+
+        @Test
+        public void testDeadCellStaysDeadWithTwoAliveNeighbours() {
+            int aliveNeighbours = 2;
+
+            cellTwo.computeNextGenerationCellState(aliveNeighbours);
+
+            assertThat(cellTwo.state, is(equalTo(DEAD)));
+        }
+
+        @Test
+        public void testDeadCellLivesWithThreeAliveNeighbours() {
+            int aliveNeighbours = 3;
+
+            cellTwo.computeNextGenerationCellState(aliveNeighbours);
+
+            assertThat(cellTwo.state, is(equalTo(ALIVE)));
+        }
+
+        @Test
+        public void testDeadCellStaysDeadWithFourAliveNeighbours() {
+            int aliveNeighbours = 4;
+
+            cellTwo.computeNextGenerationCellState(aliveNeighbours);
+
+            assertThat(cellTwo.state, is(equalTo(DEAD)));
         }
     }
 }
