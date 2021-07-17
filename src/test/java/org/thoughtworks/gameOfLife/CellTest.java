@@ -7,29 +7,72 @@ import static org.hamcrest.Matchers.*;
 import static org.thoughtworks.gameOfLife.Cell.CellState.*;
 
 public class CellTest {
+    private static Cell cellOne;
+    private static Cell cellTwo;
+    private static final int xCoordinate = 0;
+    private static final int yCoordinate = 0;
+
+    @BeforeEach
+    public void setUp() {
+        cellOne = new Cell(ALIVE, xCoordinate, yCoordinate);
+        cellTwo = new Cell(DEAD, xCoordinate, yCoordinate);
+    }
+
     @Nested
-    @DisplayName("Cell Creation")
+    @DisplayName("Cell creation")
     class CellCreation {
         @Test
         public void testBirthOfCellWithAliveStateAndCoordinates() {
-            int xCoordinate = 0;
-            int yCoordinate = 0;
-            Cell cell = new Cell(ALIVE, xCoordinate, yCoordinate);
-
-            assertThat(cell.state, is(equalTo(ALIVE)));
-            assertThat(cell.xCoordinate,is(equalTo(xCoordinate)));
-            assertThat(cell.yCoordinate,is(equalTo(yCoordinate)));
+            assertThat(cellOne.state, is(equalTo(ALIVE)));
+            assertThat(cellOne.xCoordinate, is(equalTo(xCoordinate)));
+            assertThat(cellOne.yCoordinate, is(equalTo(yCoordinate)));
         }
 
         @Test
         public void testCellWithDeadStateAndCoordinates() {
-            int xCoordinate = 0;
-            int yCoordinate = 1;
-            Cell cell = new Cell(DEAD, xCoordinate, yCoordinate);
+            assertThat(cellTwo.state, is(equalTo(DEAD)));
+            assertThat(cellTwo.xCoordinate, is(equalTo(xCoordinate)));
+            assertThat(cellTwo.yCoordinate, is(equalTo(yCoordinate)));
+        }
+    }
 
-            assertThat(cell.state, is(equalTo(DEAD)));
-            assertThat(cell.xCoordinate,is(equalTo(xCoordinate)));
-            assertThat(cell.yCoordinate,is(equalTo(yCoordinate)));
+    @Nested
+    @DisplayName("Cell state for next generation")
+    class CellStateForNextGeneration {
+        @Test
+        public void testAliveCellLivesWithTwoAliveNeighbours() {
+            int aliveNeighbours = 2;
+
+            cellOne.computeNextGenerationCellState(aliveNeighbours);
+
+            assertThat(cellOne.state, is(equalTo(ALIVE)));
+        }
+
+        @Test
+        public void testAliveCellDiesWithLessThanTwoAliveNeighbours() {
+            int aliveNeighbours = 1;
+
+            cellOne.computeNextGenerationCellState(aliveNeighbours);
+
+            assertThat(cellOne.state, is(equalTo(DEAD)));
+        }
+
+        @Test
+        public void testAliveCellLivesWithThreeAliveNeighbours() {
+            int aliveNeighbours = 3;
+
+            cellOne.computeNextGenerationCellState(aliveNeighbours);
+
+            assertThat(cellOne.state, is(equalTo(ALIVE)));
+        }
+
+        @Test
+        public void testAliveCellDiesWithMoreThreeAliveNeighbours() {
+            int aliveNeighbours = 4;
+
+            cellOne.computeNextGenerationCellState(aliveNeighbours);
+
+            assertThat(cellOne.state, is(equalTo(DEAD)));
         }
     }
 }
