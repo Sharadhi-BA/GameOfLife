@@ -1,6 +1,7 @@
 package org.thoughtworks.gameOfLife;
 
 import org.junit.jupiter.api.*;
+import org.thoughtworks.gameOfLife.exceptions.AlreadyCellExistsException;
 import org.thoughtworks.gameOfLife.exceptions.CellNotExistInGridException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -9,68 +10,60 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.thoughtworks.gameOfLife.Cell.CellState.*;
 
 public class GameTest {
-    private static Grid<Cell> grid;
     private static Game game;
-    private static Cell cellOne;
-    private static Cell cellTwo;
-    private static Cell cellThree;
-    private static Cell cellFour;
+    private static Game anotherGame;
 
     @BeforeEach
     public void initializer() {
-        grid = new Grid<>();
-        game = new Game();
-    }
-
-    @BeforeAll
-    public static void setUp() {
-        cellOne = new Cell(ALIVE, 0, 0);
-        cellTwo = new Cell(ALIVE, 0, 1);
-        cellThree = new Cell(ALIVE, 1, 0);
-        cellFour = new Cell(DEAD, 1, 1);
+        game = new Game(new Cell[2][2],2,2);
+        anotherGame=new Game(new Cell[1][1],1,1);
     }
 
     @Nested
-    @DisplayName("Count of alive cells in the grid")
+    @DisplayName("Add cells in the grid")
     class CountAliveCellsInGrid {
         @Test
-        public void testTheCountOfAliveCellsInGridWithSingleCell() throws Exception {
-            grid.addCell(cellOne);
-            int expectedNumberOfAliveCells = 0;
+        public void testCellAdditionToTheGrid() throws Exception{
+            game.add(1,1);
 
-            int actualNumberOfAliveCells = game.computeAliveNeighbours(cellOne, grid);
-
-            assertThat(actualNumberOfAliveCells, is(equalTo(expectedNumberOfAliveCells)));
+            assertThat(game.grid[1][1].state,is(equalTo(ALIVE)));
         }
 
         @Test
-        public void testTheCountOfAliveCellsInGridWithTwoAliveCell() throws Exception {
-            grid.addCell(cellOne);
-            grid.addCell(cellTwo);
-            grid.addCell(cellThree);
-            int expectedNumberOfAliveCells = 2;
+        public void testExceptionWhenCellsAreAddedToSameCoordinates() throws Exception{
+            game.add(1,1);
 
-            int actualNumberOfAliveCells = game.computeAliveNeighbours(cellOne, grid);
+            assertThrows(AlreadyCellExistsException.class,()->game.add(1,1));
+        }
+    }
 
-            assertThat(actualNumberOfAliveCells, is(equalTo(expectedNumberOfAliveCells)));
+    @Nested
+    @DisplayName("Count Alive Neighbours")
+    class AliveNeighboursCount{
+        @Test
+        public void testTheCountOfAliveNeighboursInGridWithSingleCell() throws Exception {
+            anotherGame.add(0,0);
+            int expectedNumberOfAliveNeighbours = 0;
+
+            int actualNumberOfAliveNeighbours = anotherGame.computeAliveNeighbours(0,0);
+
+            assertThat(actualNumberOfAliveNeighbours, is(equalTo(expectedNumberOfAliveNeighbours)));
         }
 
         @Test
-        public void testTheCountOfAliveCellsInGridWithTwoAliveCellAndADeadCell() throws Exception {
-            grid.addCell(cellOne);
-            grid.addCell(cellTwo);
-            grid.addCell(cellThree);
-            grid.addCell(cellFour);
-            int expectedNumberOfAliveCells = 2;
+        public void testTheCountOfAliveNeighboursInGridWithTwoAliveCell() throws Exception {
+            game.add(0,0);
+            game.add(1,1);
+            int expectedNumberOfAliveNeighbours = 1;
 
-            int actualNumberOfAliveCells = game.computeAliveNeighbours(cellOne, grid);
+            int actualNumberOfAliveNeighbours = game.computeAliveNeighbours(0,0);
 
-            assertThat(actualNumberOfAliveCells, is(equalTo(expectedNumberOfAliveCells)));
+            assertThat(actualNumberOfAliveNeighbours, is(equalTo(expectedNumberOfAliveNeighbours)));
         }
 
         @Test
-        public void testExceptionWhenGridDoesNotContainsCell() throws Exception {
-            assertThrows(CellNotExistInGridException.class, () -> game.computeAliveNeighbours(cellOne, grid));
+        public void testExceptionWhenGridDoesNotContainsCellInGivenCoordinate(){
+            assertThrows(CellNotExistInGridException.class, () -> anotherGame.computeAliveNeighbours(1,0));
         }
     }
 }

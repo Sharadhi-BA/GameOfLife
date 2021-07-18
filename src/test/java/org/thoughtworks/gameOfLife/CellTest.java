@@ -9,30 +9,24 @@ import static org.thoughtworks.gameOfLife.Cell.CellState.*;
 public class CellTest {
     private static Cell cellOne;
     private static Cell cellTwo;
-    private static final int xCoordinate = 0;
-    private static final int yCoordinate = 0;
 
     @BeforeEach
     public void setUp() {
-        cellOne = new Cell(ALIVE, xCoordinate, yCoordinate);
-        cellTwo = new Cell(DEAD, xCoordinate, yCoordinate);
+        cellOne = new Cell(ALIVE);
+        cellTwo = new Cell(DEAD);
     }
 
     @Nested
     @DisplayName("Cell creation")
     class CellCreation {
         @Test
-        public void testBirthOfCellWithAliveStateAndCoordinates() {
+        public void testBirthOfCellWithAliveState() {
             assertThat(cellOne.state, is(equalTo(ALIVE)));
-            assertThat(cellOne.xCoordinate, is(equalTo(xCoordinate)));
-            assertThat(cellOne.yCoordinate, is(equalTo(yCoordinate)));
         }
 
         @Test
-        public void testCellWithDeadStateAndCoordinates() {
+        public void testCellWithDeadState() {
             assertThat(cellTwo.state, is(equalTo(DEAD)));
-            assertThat(cellTwo.xCoordinate, is(equalTo(xCoordinate)));
-            assertThat(cellTwo.yCoordinate, is(equalTo(yCoordinate)));
         }
     }
 
